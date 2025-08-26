@@ -1,0 +1,616 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management - AI Curriculum Admin</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .admin-header h1 {
+            color: #1f2937;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-header p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .admin-nav {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+        }
+
+        .admin-nav a {
+            padding: 0.75rem 1.5rem;
+            background: #f8fafc;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 1px solid #e5e7eb;
+        }
+
+        .admin-nav a:hover {
+            background: #e2e8f0;
+            color: #475569;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-nav a.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+        }
+
+        .admin-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .admin-section h3 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1.25rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .admin-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .admin-table tr {
+            transition: all 0.2s ease;
+        }
+
+        .admin-table tr:hover {
+            background: #f8fafc;
+            transform: scale(1.005);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-active {
+            color: #059669;
+            font-weight: 600;
+            background: #d1fae5;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .status-inactive {
+            color: #dc2626;
+            font-weight: 600;
+            background: #fee2e2;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin: 0 0.25rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .modal-header h3 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #374151;
+            background: #f3f4f6;
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .danger-warning {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .danger-warning strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-stats {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: #f8fafc;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 1px solid #e5e7eb;
+        }
+
+        .nav-btn:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1>👥 User Management</h1>
+                <p style="margin: 0; color: #6b7280;">Manage platform users and permissions</p>
+                <small style="color: #9ca3af;">Logged in as: {{ admin_user.full_name }}</small>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <a href="{% url 'admin_dashboard' %}" class="nav-btn">📊 Dashboard</a>
+                <a href="{% url 'admin_curricula' %}" class="nav-btn">📚 Curricula</a>
+                <a href="{% url 'admin_feedback' %}" class="nav-btn">⭐ Feedback</a>
+                <a href="{% url 'admin_logout' %}" class="nav-btn logout-btn">🔐 Logout</a>
+            </div>
+        </div>
+
+        <div class="admin-nav">
+            <a href="{% url 'admin_dashboard' %}">📊 Overview</a>
+            <a href="{% url 'admin_users' %}" class="active">👥 Users</a>
+            <a href="{% url 'admin_curricula' %}">📚 Curricula</a>
+            <a href="{% url 'admin_feedback' %}">⭐ Feedback</a>
+        </div>
+
+        <div class="admin-section">
+            <h3>📊 Platform Users ({{ users|length }} total)</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <p style="color: #6b7280; margin: 0;">Manage user accounts, permissions, and activity</p>
+                <div style="display: flex; gap: 0.5rem;">
+                    <span style="background: #d1fae5; color: #059669; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
+                        Active: {{ users|length }}
+                    </span>
+                    <span style="background: #dbeafe; color: #1d4ed8; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
+                        Admin: {{ admin_user.username }}
+                    </span>
+                    <span style="background: #fef3c7; color: #d97706; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
+                        Can Delete: {% if admin_user.can_delete_users %}✅{% else %}❌{% endif %}
+                    </span>
+                </div>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>User Info</th>
+                        <th>Email</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                        <th>Activity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr id="user-row-{{ user.id }}">
+                        <td>
+                            <strong>{{ user.username }}</strong><br>
+                            <small>{{ user.first_name }} {{ user.last_name }}</small>
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="{% if user.is_active %}status-active{% else %}status-inactive{% endif %}">
+                                {% if user.is_active %}✅ Active{% else %}❌ Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="user-stats">
+                                📚 {{ user.curriculum_count }} curricula<br>
+                                📝 {{ user.notes_count }} notes<br>
+                                ⭐ {{ user.feedback_count }} feedback
+                            </div>
+                        </td>
+                        <td>
+                            <button onclick="toggleUserStatus({{ user.id }}, {{ user.is_active|yesno:'true,false' }})"
+                                    class="btn-small {% if user.is_active %}btn-warning{% else %}btn-success{% endif %}">
+                                {% if user.is_active %}🚫 Deactivate{% else %}✅ Activate{% endif %}
+                            </button>
+                            {% if admin_user.can_delete_users %}
+                            <button onclick="showDeleteModal({{ user.id }}, '{{ user.username }}', '{{ user.email }}')"
+                                    class="btn-small btn-danger"
+                                    title="Permanently delete this user and all their data"
+                                    style="font-weight: bold; padding: 0.6rem 1.2rem; margin-top: 0.5rem;">
+                                🗑️ DELETE USER
+                            </button>
+                            {% else %}
+                            <span class="btn-small" style="background: #d1d5db; color: #6b7280; cursor: not-allowed; padding: 0.6rem 1.2rem; margin-top: 0.5rem;"
+                                  title="You don't have permission to delete users">
+                                🔒 Delete
+                            </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #6b7280;">No users found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚠️ Delete User Account</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            
+            <div class="danger-warning">
+                <strong>⚠️ DANGER: This action cannot be undone!</strong>
+                This will permanently delete the user account and ALL associated data including:
+                <ul>
+                    <li>All curricula created by this user</li>
+                    <li>All notes and progress data</li>
+                    <li>All feedback and ratings</li>
+                    <li>User profile and settings</li>
+                </ul>
+            </div>
+
+            <form id="deleteForm">
+                <div class="form-group">
+                    <label>User to delete:</label>
+                    <p id="deleteUserInfo" style="font-weight: bold; color: #dc2626;"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmUsername">Type the username to confirm deletion:</label>
+                    <input type="text" id="confirmUsername" placeholder="Enter username to confirm" required>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" onclick="closeDeleteModal()" class="btn-small" style="background: #6b7280; color: white;">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-small btn-danger">
+                        🗑️ Permanently Delete User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentUserId = null;
+        let currentUsername = null;
+
+        function toggleUserStatus(userId, isActive) {
+            if (confirm(`Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this user?`)) {
+                fetch('{% url "admin_toggle_user_status" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        user_id: userId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Refresh to show updated status
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating user status.');
+                });
+            }
+        }
+
+        function showDeleteModal(userId, username, email) {
+            currentUserId = userId;
+            currentUsername = username;
+
+            document.getElementById('deleteUserInfo').textContent = `${username} (${email})`;
+            document.getElementById('confirmUsername').value = '';
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            currentUserId = null;
+            currentUsername = null;
+        }
+
+        document.getElementById('deleteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const confirmUsername = document.getElementById('confirmUsername').value;
+
+            if (confirmUsername !== currentUsername) {
+                alert('Username confirmation does not match. Please type the exact username.');
+                return;
+            }
+
+            if (!confirm('This will PERMANENTLY DELETE the user and ALL their data. Are you absolutely sure?')) {
+                return;
+            }
+
+            fetch('{% url "admin_delete_user" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    user_id: currentUserId,
+                    confirm_username: confirmUsername
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`User deleted successfully!\n\nDeleted data:\n- ${data.deleted_data.curricula} curricula\n- ${data.deleted_data.notes} notes\n- ${data.deleted_data.feedback} feedback entries`);
+
+                    // Remove the user row from the table
+                    const userRow = document.getElementById(`user-row-${currentUserId}`);
+                    if (userRow) {
+                        userRow.remove();
+                    }
+
+                    closeDeleteModal();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the user.');
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .card {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #duration-section,
+        #generate-section {
+            display: none;
+        }
+
+        .output {
+            margin-top: 2rem;
+        }
+
+        .curriculum-block {
+            background: #f9fafb;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Welcome {{ request.user.first_name|default:request.user.username }}</h2>
+        <p>I’m here to help you learn. Choose what you’d like to learn below:</p>
+
+        <!-- Subject Selection -->
+        <select id="unit-select">
+            <option value="" disabled selected>Select a Unit</option>
+            <option value="Python">Python</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Data Science">Data Science</option>
+            <option value="Cybersecurity">Cybersecurity</option>
+        </select>
+
+        <button onclick="showDuration()">Next</button>
+
+        <!-- Duration Section -->
+        <div id="duration-section">
+            <p>Nice pick! So how long would you like to learn?</p>
+            <select id="duration-select">
+                <option value="" disabled selected>Select duration</option>
+                <option value="1">1 week</option>
+                <option value="2">2 weeks</option>
+                <option value="3">3 weeks</option>
+                <option value="4">4 weeks</option>
+            </select>
+
+            <p>What's your learning goal? (e.g., I want to build a game)</p>
+            <input type="text" id="goal-input" placeholder="Your goal (optional)">
+
+            <button onclick="showGenerate()">Next</button>
+        </div>
+
+        <!-- Generate Button + Curriculum Output -->
+        <div id="generate-section">
+            <p>Click below to generate your curriculum:</p>
+            <button onclick="generateCurriculum()">Connect to AI (Gemini)</button>
+            <div id="output" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTopic = "";
+        let selectedDuration = "";
+
+        function showDuration() {
+            selectedTopic = document.getElementById('unit-select').value;
+            if (selectedTopic) {
+                document.getElementById('duration-section').style.display = 'block';
+            }
+        }
+
+        function showGenerate() {
+            selectedDuration = document.getElementById('duration-select').value;
+            if (selectedDuration) {
+                document.getElementById('generate-section').style.display = 'block';
+            }
+        }
+
+        async function generateCurriculum() {
+            const outputContainer = document.getElementById('output');
+            outputContainer.innerHTML = `<p><strong>Generating curriculum, please wait...</strong></p>`;
+
+            try {
+                const response = await fetch('/generate_curriculum/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: JSON.stringify({
+                        topic: selectedTopic,
+                        duration: selectedDuration,
+                        goal: document.getElementById('goal-input').value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    outputContainer.innerHTML = renderCurriculum(result.curriculum);
+                    outputContainer.innerHTML += `<button onclick="downloadAsPDF()">Download as PDF</button>`;
+                } else {
+                    outputContainer.innerHTML = `<p style="color:red;">Error: ${result.error}</p>`;
+                    if (result.raw_output) {
+                        outputContainer.innerHTML += `<pre>${result.raw_output}</pre>`;
+                    }
+                }
+
+            } catch (error) {
+                outputContainer.innerHTML = `<p style="color:red;">Unexpected error: ${error.message}</p>`;
+            }
+        }
+
+        function renderCurriculum(curriculum) {
+            let html = `<h3>Your Personalized Curriculum</h3>`;
+            curriculum.forEach(week => {
+                html += `
+                    <div class="curriculum-block">
+                        <h4>Week ${week.week}: ${week.topic}</h4>
+                        <p><strong>Goal:</strong> ${week.goal}</p>
+                        <p><strong>Videos:</strong><ul>
+                            ${week.videos.map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join("")}
+                        </ul></p>
+                        <p><strong>Tasks:</strong><ul>
+                            ${week.tasks.map(task => `<li>${task}</li>`).join("")}
+                        </ul></p>
+                    </div>`;
+            });
+            return html;
+        }
+
+        function downloadAsPDF() {
+            const printableContent = document.querySelector('.output').innerHTML;
+            const newWindow = window.open('', '', 'width=800,height=600');
+            newWindow.document.write('<html><head><title>Curriculum PDF</title></head><body>');
+            newWindow.document.write(printableContent);
+            newWindow.document.write('</body></html>');
+            newWindow.document.close();
+            newWindow.print();
+        }
+
+        function getCSRFToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') return value;
+            }
+            return '';
+        }
+    </script>
+</body>
+</html>

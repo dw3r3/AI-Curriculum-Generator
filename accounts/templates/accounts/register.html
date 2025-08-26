@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DWA Register</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}">
+</head>
+<body>
+    <div class="card">
+        <img src="{% static 'accounts/images/dwa_logo.png' %}" alt="DWA Logo" class="logo">
+        <h2>Sign Up</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p style="color:red;">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <input type="text" name="first_name" placeholder="First Name" required>
+            <input type="text" name="last_name" placeholder="Last Name" required>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password1" placeholder="Password (min 8 chars, uppercase, lowercase, number, special char)" required>
+            <input type="password" name="password2" placeholder="Confirm Password" required>
+            <button type="submit">Register</button>
+        </form>
+        <div class="links">
+            <a href="{% url 'login' %}">Already have an account? Login</a>
+        </div>
+    </div>
+</body>
+</html>

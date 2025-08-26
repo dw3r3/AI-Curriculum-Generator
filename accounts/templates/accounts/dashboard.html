@@ -1,0 +1,1886 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .card {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            position: relative;
+        }
+
+        .avatar-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #3b82f6;
+        }
+
+        .avatar-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-details h2 {
+            margin: 0 0 0.5rem 0;
+        }
+
+        .user-level {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .xp-bar {
+            width: 100px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            transition: width 0.3s ease;
+        }
+
+        .xp-text {
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #3b82f6;
+            background: white;
+            color: #3b82f6;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        .admin-btn {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+
+        .admin-btn:hover {
+            background: #6d28d9;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-weight: bold;
+            color: #059669;
+        }
+
+        .curriculum-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .curriculum-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #1f2937;
+        }
+
+        .curriculum-info p {
+            margin: 0 0 0.5rem 0;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .mini-progress-bar {
+            width: 200px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .mini-progress-fill {
+            height: 100%;
+            background: #10b981;
+        }
+
+        .mini-progress-text {
+            font-size: 0.8rem;
+            color: #059669;
+            font-weight: bold;
+        }
+
+        .curriculum-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .small-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid #3b82f6;
+            background: white;
+            color: #3b82f6;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .small-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        button, .btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            margin-right: 1rem;
+        }
+
+        button:hover, .btn:hover {
+            background-color: #2563eb;
+        }
+
+        .download-btn {
+            background-color: #059669;
+        }
+
+        .download-btn:hover {
+            background-color: #047857;
+        }
+
+        #duration-section,
+        #generate-section {
+            display: none;
+        }
+
+        .output {
+            margin-top: 2rem;
+        }
+
+        .curriculum-block {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            gap: 1rem;
+        }
+
+        .task-checkbox {
+            margin-top: 0.25rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .task-text {
+            flex: 1;
+            line-height: 1.6;
+            font-size: 1rem;
+            color: #374151;
+            word-wrap: break-word;
+            max-width: calc(100% - 100px);
+        }
+
+        .task-completed {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+
+        .task-note-btn {
+            padding: 0.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-note-btn:hover {
+            background: #2563eb;
+        }
+
+        .tasks-section {
+            margin-top: 1rem;
+        }
+
+        .tasks-section h5 {
+            margin: 0 0 1rem 0;
+            color: #374151;
+            font-size: 1.1rem;
+        }
+
+        .tasks-table {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .task-row {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            gap: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .task-row:last-child {
+            border-bottom: none;
+        }
+
+        .task-row:hover {
+            background-color: #f9fafb;
+        }
+
+        .task-checkbox-cell {
+            flex-shrink: 0;
+            width: 24px;
+            display: flex;
+            align-items: flex-start;
+            padding-top: 0.25rem;
+        }
+
+        .task-content-cell {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-actions-cell {
+            flex-shrink: 0;
+            width: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .task-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-resources, .task-videos {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .resource-link {
+            color: #3b82f6;
+            text-decoration: none;
+            margin-right: 0.5rem;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        .video-link {
+            color: #7c3aed;
+            margin-right: 0.5rem;
+        }
+
+        .task-checkbox {
+            margin-right: 0.5rem;
+            width: auto;
+        }
+
+        .task-text {
+            flex: 1;
+        }
+
+        .task-completed {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+
+        .week-progress {
+            font-size: 0.9rem;
+            color: #059669;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+
+        h3 {
+            color: #1f2937;
+            margin-top: 0;
+        }
+
+        h4 {
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Congratulations Modal */
+        .congratulations-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .congratulations-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: celebrationPop 0.6s ease-out;
+        }
+
+        .congratulations-content h2 {
+            color: #059669;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .congratulations-content p {
+            font-size: 1.2rem;
+            color: #374151;
+            margin-bottom: 2rem;
+        }
+
+        .celebration-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .close-congratulations {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .close-congratulations:hover {
+            background: #047857;
+        }
+
+        @keyframes celebrationPop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Profile Section Styles */
+        .profile-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            color: #6b7280;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .tab-btn:hover {
+            color: #3b82f6;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .achievement-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-card.earned {
+            background: linear-gradient(135deg, #fef3c7, #fbbf24);
+            border-color: #f59e0b;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-card h4 {
+            margin: 0.5rem 0;
+            color: #1f2937;
+        }
+
+        .achievement-card p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        /* Notes and Feedback Styles */
+        .curriculum-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .curriculum-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .notes-btn {
+            background: #8b5cf6;
+        }
+
+        .notes-btn:hover {
+            background: #7c3aed;
+        }
+
+        .feedback-btn {
+            background: #f59e0b;
+        }
+
+        .feedback-btn:hover {
+            background: #d97706;
+        }
+
+        .week-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #7c3aed;
+        }
+
+        .week-header h4 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 1.3rem;
+        }
+
+        .week-progress {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .notes-toggle {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .notes-toggle:hover {
+            background: #059669;
+        }
+
+        .week-notes {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .notes-header h5 {
+            margin: 0;
+            color: #0c4a6e;
+        }
+
+        .notes-toggle {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .notes-toggle:hover {
+            background: #7c3aed;
+        }
+
+        .task-note-btn {
+            background: none;
+            border: none;
+            color: #8b5cf6;
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .task-note-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .week-notes {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .notes-header h5 {
+            margin: 0;
+            color: #374151;
+        }
+
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .note-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .note-date {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .note-content {
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .note-edit, .note-delete {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .note-edit:hover {
+            color: #3b82f6;
+            background: #f3f4f6;
+        }
+
+        .note-delete:hover {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .modal-close:hover {
+            color: #374151;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.25rem;
+            margin: 1rem 0;
+        }
+
+        .star {
+            font-size: 1.5rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star.active,
+        .star:hover {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header-section">
+            <div class="user-info">
+                <div class="user-avatar">
+                    {% if request.user.userprofile.avatar %}
+                        <img src="{{ request.user.userprofile.avatar.url }}" alt="Avatar" class="avatar-img">
+                    {% else %}
+                        <div class="avatar-placeholder">{{ request.user.first_name.0|default:request.user.username.0|upper }}</div>
+                    {% endif %}
+                </div>
+                <div class="user-details">
+                    <h2>Welcome {{ request.user.first_name|default:request.user.username }}</h2>
+                    <div class="user-level">
+                        <span class="level-badge">Level {{ request.user.userprofile.level|default:1 }}</span>
+                        <div class="xp-bar">
+                            <div class="xp-fill" style="width: {{ request.user.userprofile.get_level_progress }}%"></div>
+                        </div>
+                        <span class="xp-text">{{ request.user.userprofile.total_xp|default:0 }} XP</span>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button onclick="showProfile()" class="nav-btn profile-btn">👤 Profile</button>
+                <button onclick="showNewCurriculum()" class="nav-btn">Create New Curriculum</button>
+                <button onclick="showHistory()" class="nav-btn">My Curricula</button>
+                <a href="{% url 'logout' %}" class="nav-btn logout-btn">Logout</a>
+            </div>
+        </div>
+
+        <!-- Active Curriculum Progress -->
+        {% if active_curriculum %}
+        <div id="active-curriculum" class="section">
+            <h3>📚 Current Curriculum: {{ active_curriculum.topic }}</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: {{ active_curriculum.get_progress_percentage }}%"></div>
+            </div>
+            <p class="progress-text">{{ active_curriculum.get_progress_percentage|floatformat:1 }}% Complete</p>
+            <button onclick="showCurriculumDetails({{ active_curriculum.id }})" class="btn">Continue Learning</button>
+            <a href="{% url 'download_curriculum_pdf' active_curriculum.id %}" class="btn download-btn">Download PDF</a>
+        </div>
+        {% endif %}
+
+        <!-- Curriculum History -->
+        <div id="history-section" class="section" style="display: none;">
+            <h3>📖 Your Learning History</h3>
+            {% if curricula %}
+                {% for curriculum in curricula %}
+                <div class="curriculum-history-item">
+                    <div class="curriculum-info">
+                        <h4>{{ curriculum.topic }}</h4>
+                        <p>{{ curriculum.duration }} weeks • Created: {{ curriculum.created_at|date:"M d, Y" }}</p>
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" style="width: {{ curriculum.get_progress_percentage }}%"></div>
+                        </div>
+                        <span class="mini-progress-text">{{ curriculum.get_progress_percentage|floatformat:1 }}%</span>
+                    </div>
+                    <div class="curriculum-actions">
+                        <button onclick="showCurriculumDetails({{ curriculum.id }})" class="small-btn">View</button>
+                        <a href="{% url 'download_curriculum_pdf' curriculum.id %}" class="small-btn">PDF</a>
+                        {% if not curriculum.is_active %}
+                        <button onclick="setActiveCurriculum({{ curriculum.id }})" class="small-btn">Resume</button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No curricula created yet. Create your first one below!</p>
+            {% endif %}
+        </div>
+
+        <!-- New Curriculum Creation -->
+        <div id="new-curriculum-section" class="section">
+            <h3>🎯 Create New Learning Path</h3>
+            <p>Choose what you'd like to learn:</p>
+
+            <!-- Subject Selection -->
+            <select id="unit-select">
+                <option value="" disabled selected>Select a Unit</option>
+                <option value="Python">Python</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Cybersecurity">Cybersecurity</option>
+            </select>
+
+            <button onclick="showDuration()">Next</button>
+
+            <!-- Duration Section -->
+            <div id="duration-section">
+                <p>Nice pick! So how long would you like to learn?</p>
+                <select id="duration-select">
+                    <option value="" disabled selected>Select duration</option>
+                    <option value="1">1 week</option>
+                    <option value="2">2 weeks</option>
+                    <option value="3">3 weeks</option>
+                    <option value="4">4 weeks</option>
+                </select>
+
+                <p>What's your learning goal? (e.g., I want to build a game)</p>
+                <input type="text" id="goal-input" placeholder="Your goal (optional)">
+
+                <button onclick="showGenerate()">Next</button>
+            </div>
+
+            <!-- Generate Button + Curriculum Output -->
+            <div id="generate-section">
+                <p>Click below to generate your curriculum:</p>
+                <button onclick="generateCurriculum()">Connect to AI (Gemini)</button>
+                <div id="output" class="output"></div>
+            </div>
+        </div>
+
+        <!-- User Profile Section -->
+        <div id="profile-section" class="section" style="display: none;">
+            <h3>👤 User Profile</h3>
+            <div class="profile-content">
+                <div class="profile-tabs">
+                    <button class="tab-btn active" onclick="showProfileTab('personal')">Personal Info</button>
+                    <button class="tab-btn" onclick="showProfileTab('preferences')">Learning Preferences</button>
+                    <button class="tab-btn" onclick="showProfileTab('notifications')">Notifications</button>
+                    <button class="tab-btn" onclick="showProfileTab('achievements')">Achievements</button>
+                </div>
+
+                <!-- Personal Info Tab -->
+                <div id="personal-tab" class="tab-content active">
+                    <form id="profile-form" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" name="first_name" value="{{ request.user.first_name }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" name="last_name" value="{{ request.user.last_name }}" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" value="{{ request.user.email }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea name="bio" placeholder="Tell us about yourself...">{{ request.user.userprofile.bio|default:'' }}</textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" name="phone_number" value="{{ request.user.userprofile.phone_number|default:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input type="text" name="location" value="{{ request.user.userprofile.location|default:'' }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Profile Picture</label>
+                            <input type="file" name="avatar" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn">Update Profile</button>
+                    </form>
+                </div>
+
+                <!-- Learning Preferences Tab -->
+                <div id="preferences-tab" class="tab-content">
+                    <form id="preferences-form">
+                        <div class="form-group">
+                            <label>Learning Style</label>
+                            <select name="learning_style">
+                                <option value="">Select your learning style</option>
+                                <option value="visual" {% if request.user.userprofile.learning_style == 'visual' %}selected{% endif %}>Visual Learner</option>
+                                <option value="auditory" {% if request.user.userprofile.learning_style == 'auditory' %}selected{% endif %}>Auditory Learner</option>
+                                <option value="kinesthetic" {% if request.user.userprofile.learning_style == 'kinesthetic' %}selected{% endif %}>Kinesthetic Learner</option>
+                                <option value="reading" {% if request.user.userprofile.learning_style == 'reading' %}selected{% endif %}>Reading/Writing Learner</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Study Pace</label>
+                            <select name="preferred_pace">
+                                <option value="slow" {% if request.user.userprofile.preferred_pace == 'slow' %}selected{% endif %}>Slow & Steady</option>
+                                <option value="medium" {% if request.user.userprofile.preferred_pace == 'medium' %}selected{% endif %}>Moderate Pace</option>
+                                <option value="fast" {% if request.user.userprofile.preferred_pace == 'fast' %}selected{% endif %}>Fast Track</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Privacy Settings</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="profile_public" {% if request.user.userprofile.profile_public %}checked{% endif %}>
+                                    Make my profile public
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="show_progress" {% if request.user.userprofile.show_progress %}checked{% endif %}>
+                                    Show my learning progress
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">Save Preferences</button>
+                    </form>
+                </div>
+
+                <!-- Notifications Tab -->
+                <div id="notifications-tab" class="tab-content">
+                    <form id="notifications-form">
+                        <div class="form-group">
+                            <label>Email Notifications</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="email_notifications" {% if request.user.userprofile.email_notifications %}checked{% endif %}>
+                                    Receive email notifications
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="study_reminders" {% if request.user.userprofile.study_reminders %}checked{% endif %}>
+                                    Study reminders
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="achievement_notifications" {% if request.user.userprofile.achievement_notifications %}checked{% endif %}>
+                                    Achievement notifications
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">Save Notification Settings</button>
+                    </form>
+                </div>
+
+                <!-- Achievements Tab -->
+                <div id="achievements-tab" class="tab-content">
+                    <div class="achievements-grid">
+                        <div class="achievement-card earned">
+                            <div class="achievement-icon">🎓</div>
+                            <h4>First Curriculum</h4>
+                            <p>Completed your first curriculum</p>
+                        </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">🔥</div>
+                            <h4>7-Day Streak</h4>
+                            <p>Study for 7 consecutive days</p>
+                        </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">📝</div>
+                            <h4>Note Taker</h4>
+                            <p>Create 10 study notes</p>
+                        </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">⭐</div>
+                            <h4>Feedback Provider</h4>
+                            <p>Leave helpful feedback on curricula</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Curriculum Details View -->
+        <div id="curriculum-details" class="section" style="display: none;">
+            <div id="curriculum-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // CSRF token for AJAX requests
+        const csrfToken = '{{ csrf_token }}';
+        
+        let selectedTopic = "";
+        let selectedDuration = "";
+        let currentCurriculumId = null;
+
+        // Navigation functions
+        function showNewCurriculum() {
+            hideAllSections();
+            document.getElementById('new-curriculum-section').style.display = 'block';
+        }
+
+        function showHistory() {
+            hideAllSections();
+            document.getElementById('history-section').style.display = 'block';
+        }
+
+        function showProfile() {
+            hideAllSections();
+            document.getElementById('profile-section').style.display = 'block';
+        }
+
+        function hideAllSections() {
+            document.getElementById('new-curriculum-section').style.display = 'none';
+            document.getElementById('history-section').style.display = 'none';
+            document.getElementById('curriculum-details').style.display = 'none';
+            document.getElementById('profile-section').style.display = 'none';
+        }
+
+        function showProfileTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Original curriculum creation functions
+        function showDuration() {
+            selectedTopic = document.getElementById('unit-select').value;
+            if (selectedTopic) {
+                document.getElementById('duration-section').style.display = 'block';
+            }
+        }
+
+        function showGenerate() {
+            selectedDuration = document.getElementById('duration-select').value;
+            if (selectedDuration) {
+                document.getElementById('generate-section').style.display = 'block';
+            }
+        }
+
+        async function generateCurriculum() {
+            const outputContainer = document.getElementById('output');
+            outputContainer.innerHTML = `<p><strong>Generating curriculum, please wait...</strong></p>`;
+
+            try {
+                const response = await fetch('/generate_curriculum/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: JSON.stringify({
+                        topic: selectedTopic,
+                        duration: selectedDuration,
+                        goal: document.getElementById('goal-input').value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    currentCurriculumId = result.curriculum_id;
+                    // Extract weeks array from curriculum object
+                    const curriculumWeeks = result.curriculum.weeks || result.curriculum;
+                    outputContainer.innerHTML = renderCurriculumWithProgress(curriculumWeeks, result.curriculum_id);
+                    outputContainer.innerHTML += `<button onclick="downloadAsPDF(${result.curriculum_id})">Download as PDF</button>`;
+
+                    // Refresh the page to show updated active curriculum
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    outputContainer.innerHTML = `<p style="color:red;">Error: ${result.error}</p>`;
+                    if (result.raw_output) {
+                        outputContainer.innerHTML += `<pre>${result.raw_output}</pre>`;
+                    }
+                }
+
+            } catch (error) {
+                outputContainer.innerHTML = `<p style="color:red;">Unexpected error: ${error.message}</p>`;
+            }
+        }
+
+        // Enhanced curriculum rendering with progress tracking
+        function renderCurriculumWithProgress(curriculum, curriculumId) {
+            let html = `<h3>Your Personalized Curriculum</h3>`;
+            curriculum.forEach(week => {
+                html += `
+                    <div class="curriculum-block">
+                        <h4>Week ${week.week}: ${week.title || week.topic || 'Week ' + week.week}</h4>
+                        <p><strong>Goal:</strong> ${week.description || week.goal || 'No description available'}</p>`;
+
+                if (week.videos && week.videos.length > 0) {
+                    html += `<p><strong>Videos:</strong><ul>
+                        ${week.videos.map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join("")}
+                    </ul></p>`;
+                }
+
+                if (week.tasks && week.tasks.length > 0) {
+                    html += `<p><strong>Tasks:</strong></p>`;
+                    week.tasks.forEach((task, index) => {
+                        // Handle both old format (string) and new format (object with task property)
+                        const taskText = typeof task === 'string' ? task : (task.task || task.title || 'Task ' + (index + 1));
+                        
+                        html += `
+                            <div class="task-item">
+                                <input type="checkbox" class="task-checkbox"
+                                       onchange="updateTaskProgress(${curriculumId}, ${week.week}, ${index}, this.checked)"
+                                       id="task-${week.week}-${index}">
+                                <span class="task-text" id="text-${week.week}-${index}">${taskText}</span>
+                            </div>`;
+                    });
+                }
+
+                html += `</div>`;
+            });
+            return html;
+        }
+
+        // Show curriculum details
+        async function showCurriculumDetails(curriculumId) {
+            hideAllSections();
+            document.getElementById('curriculum-details').style.display = 'block';
+
+            try {
+                const response = await fetch(`/curriculum/${curriculumId}/progress/`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Get curriculum data from backend API response
+                    const curriculum = result.curriculum_content || [];
+                    const content = renderCurriculumDetailsWithProgress(curriculum, curriculumId, result.progress);
+                    document.getElementById('curriculum-content').innerHTML = content;
+
+                    // Load existing progress
+                    loadProgressState(result.progress);
+                }
+            } catch (error) {
+                console.error('Error loading curriculum details:', error);
+                document.getElementById('curriculum-content').innerHTML = `
+                    <div class="curriculum-block">
+                        <h3>❌ Error Loading Curriculum</h3>
+                        <p>There was an error loading the curriculum details. Please try refreshing the page.</p>
+                        <button onclick="location.reload()" class="btn">Refresh Page</button>
+                    </div>`;
+            }
+        }
+
+        function renderCurriculumDetailsWithProgress(curriculum, curriculumId, progressData) {
+            let html = `
+                <div class="curriculum-header">
+                    <h3>📚 Curriculum Progress</h3>
+                    <div class="curriculum-actions">
+                        <button onclick="showNotes(${curriculumId})" class="btn notes-btn">📝 My Notes</button>
+                        <button onclick="showFeedback(${curriculumId})" class="btn feedback-btn">⭐ Rate & Review</button>
+                        <a href="/curriculum/${curriculumId}/download/" class="btn download-btn">📄 Download PDF</a>
+                    </div>
+                </div>`;
+
+            // Check if curriculum is valid array
+            if (!Array.isArray(curriculum) || curriculum.length === 0) {
+                html += `<div class="curriculum-block">
+                    <p>No curriculum content available. Please try generating a new curriculum.</p>
+                </div>`;
+                return html;
+            }
+
+            curriculum.forEach(week => {
+                const weekProgress = progressData[week.week] || {};
+                const completedTasks = Object.values(weekProgress).filter(task => task.completed).length;
+                const totalTasks = week.tasks ? week.tasks.length : 0;
+                const weekPercentage = totalTasks > 0 ? (completedTasks / totalTasks * 100) : 0;
+
+                html += `
+                    <div class="curriculum-block">
+                        <div class="week-header">
+                            <h4>Week ${week.week}: ${week.title || week.topic || 'Week ' + week.week}</h4>
+                            <button onclick="toggleWeekNotes(${curriculumId}, ${week.week})" class="small-btn notes-toggle">📝 Notes</button>
+                        </div>
+                        <div class="week-progress">Progress: ${weekPercentage.toFixed(1)}% (${completedTasks}/${totalTasks} tasks)</div>
+                        <p><strong>Description:</strong> ${week.description || week.goal || 'No description available'}</p>`;
+
+                if (week.videos && week.videos.length > 0) {
+                    html += `<p><strong>Videos:</strong><ul>
+                        ${week.videos.map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join("")}
+                    </ul></p>`;
+                }
+
+                if (week.tasks && week.tasks.length > 0) {
+                    html += `
+                        <div class="tasks-section">
+                            <h5><strong>📋 Tasks:</strong></h5>
+                            <div class="tasks-table">`;
+
+                    week.tasks.forEach((task, index) => {
+                        const isCompleted = weekProgress[index] && weekProgress[index].completed;
+                        // Handle both old format (string) and new format (object with task property)
+                        const taskText = typeof task === 'string' ? task : (task.task || task.title || 'Task ' + (index + 1));
+
+                        // Get resources and videos if available
+                        const resources = (typeof task === 'object' && task.resources) ? task.resources : [];
+                        const videos = (typeof task === 'object' && task.videos) ? task.videos : [];
+
+                        html += `
+                            <div class="task-row">
+                                <div class="task-checkbox-cell">
+                                    <input type="checkbox" class="task-checkbox"
+                                           ${isCompleted ? 'checked' : ''}
+                                           onchange="updateTaskProgress(${curriculumId}, ${week.week}, ${index}, this.checked)"
+                                           id="task-${week.week}-${index}">
+                                </div>
+                                <div class="task-content-cell">
+                                    <div class="task-text ${isCompleted ? 'task-completed' : ''}"
+                                          id="text-${week.week}-${index}">${taskText}</div>`;
+
+                        // Add resources if available
+                        if (resources.length > 0) {
+                            html += `<div class="task-resources">
+                                <strong>📚 Resources:</strong>
+                                ${resources.map(resource => `<a href="${resource}" target="_blank" class="resource-link">${resource}</a>`).join(', ')}
+                            </div>`;
+                        }
+
+                        // Add videos if available
+                        if (videos.length > 0) {
+                            html += `<div class="task-videos">
+                                <strong>🎥 Videos:</strong>
+                                ${videos.map(video => `<span class="video-link">${video}</span>`).join(', ')}
+                            </div>`;
+                        }
+
+                        html += `
+                                </div>
+                                <div class="task-actions-cell">
+                                    <button onclick="addTaskNote(${curriculumId}, ${week.week}, ${index})" class="task-note-btn">📝</button>
+                                </div>
+                            </div>`;
+                    });
+
+                    html += `
+                            </div>
+                        </div>`;
+                }
+
+                // Week notes section (initially hidden)
+                html += `
+                    <div id="week-notes-${week.week}" class="week-notes" style="display: none;">
+                        <div class="notes-header">
+                            <h5>📝 Week ${week.week} Notes</h5>
+                            <button onclick="addWeekNote(${curriculumId}, ${week.week})" class="small-btn">+ Add Note</button>
+                        </div>
+                        <div id="notes-list-${week.week}" class="notes-list">
+                            <!-- Notes will be loaded here -->
+                        </div>
+                    </div>`;
+
+                html += `</div>`;
+            });
+
+            return html;
+        }
+
+        // Load progress state into checkboxes
+        function loadProgressState(progressData) {
+            Object.keys(progressData).forEach(weekNum => {
+                Object.keys(progressData[weekNum]).forEach(taskIndex => {
+                    const checkbox = document.getElementById(`task-${weekNum}-${taskIndex}`);
+                    const textSpan = document.getElementById(`text-${weekNum}-${taskIndex}`);
+                    if (checkbox && textSpan) {
+                        const isCompleted = progressData[weekNum][taskIndex].completed;
+                        checkbox.checked = isCompleted;
+                        if (isCompleted) {
+                            textSpan.classList.add('task-completed');
+                        }
+                    }
+                });
+            });
+        }
+
+        // Update task progress
+        async function updateTaskProgress(curriculumId, weekNumber, taskIndex, isCompleted) {
+            try {
+                console.log('Updating progress:', { curriculumId, weekNumber, taskIndex, isCompleted });
+                
+                const requestData = {
+                    curriculum_id: curriculumId,
+                    week_number: weekNumber,
+                    task_index: taskIndex,
+                    is_completed: isCompleted
+                };
+                
+                console.log('Request data:', requestData);
+                console.log('CSRF token:', getCSRFToken());
+                
+                const response = await fetch('/update_progress/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response result:', result);
+
+                if (result.success) {
+                    // Update visual state
+                    const textSpan = document.getElementById(`text-${weekNumber}-${taskIndex}`);
+                    if (textSpan) {
+                        if (isCompleted) {
+                            textSpan.classList.add('task-completed');
+                        } else {
+                            textSpan.classList.remove('task-completed');
+                        }
+                    }
+
+                    // Update progress bar if on main dashboard
+                    const progressFill = document.getElementById('progress-fill');
+                    if (progressFill) {
+                        progressFill.style.width = result.progress_percentage + '%';
+                        const progressText = document.querySelector('.progress-text');
+                        if (progressText) {
+                            progressText.textContent = result.progress_percentage.toFixed(1) + '% Complete';
+                        }
+                    }
+
+                    // Show congratulations if curriculum is completed
+                    if (result.congratulations && result.progress_percentage >= 100) {
+                        showCongratulations();
+                    }
+                } else {
+                    console.error('Error updating progress:', result.error);
+                    // Revert checkbox state
+                    const checkbox = document.getElementById(`task-${weekNumber}-${taskIndex}`);
+                    if (checkbox) {
+                        checkbox.checked = !isCompleted;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating progress:', error);
+                console.error('Error details:', error.message);
+                // Revert checkbox state
+                const checkbox = document.getElementById(`task-${weekNumber}-${taskIndex}`);
+                if (checkbox) {
+                    checkbox.checked = !isCompleted;
+                }
+            }
+        }
+
+        // Set active curriculum
+        async function setActiveCurriculum(curriculumId) {
+            // This would require a new endpoint to set active curriculum
+            // For now, just reload the curriculum details
+            showCurriculumDetails(curriculumId);
+        }
+
+        function downloadAsPDF(curriculumId) {
+            window.open(`/curriculum/${curriculumId}/download/`, '_blank');
+        }
+
+        function showCongratulations() {
+            const modal = document.createElement('div');
+            modal.className = 'congratulations-modal';
+            modal.innerHTML = `
+                <div class="congratulations-content">
+                    <span class="celebration-emoji">🎉</span>
+                    <h2>Congratulations!</h2>
+                    <p>You have successfully completed your curriculum! 🎓</p>
+                    <p>Great job on your learning journey. You should be proud of your achievement!</p>
+                    <button class="close-congratulations" onclick="closeCongratulations()">Continue Learning</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Add confetti effect (simple version)
+            setTimeout(() => {
+                createConfetti();
+            }, 300);
+        }
+
+        function closeCongratulations() {
+            const modal = document.querySelector('.congratulations-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function createConfetti() {
+            // Simple confetti effect
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'][Math.floor(Math.random() * 5)];
+                confetti.style.pointerEvents = 'none';
+                confetti.style.zIndex = '1001';
+                confetti.style.borderRadius = '50%';
+
+                document.body.appendChild(confetti);
+
+                // Animate confetti falling
+                let pos = -10;
+                const fall = setInterval(() => {
+                    pos += Math.random() * 5 + 2;
+                    confetti.style.top = pos + 'px';
+                    confetti.style.left = (parseFloat(confetti.style.left) + (Math.random() - 0.5) * 2) + 'vw';
+
+                    if (pos > window.innerHeight) {
+                        clearInterval(fall);
+                        confetti.remove();
+                    }
+                }, 50);
+            }
+        }
+
+        // Notes functionality
+        function toggleWeekNotes(curriculumId, weekNumber) {
+            const notesSection = document.getElementById(`week-notes-${weekNumber}`);
+            if (notesSection.style.display === 'none') {
+                notesSection.style.display = 'block';
+                loadWeekNotes(curriculumId, weekNumber);
+            } else {
+                notesSection.style.display = 'none';
+            }
+        }
+
+        function addWeekNote(curriculumId, weekNumber) {
+            showNoteModal(curriculumId, weekNumber);
+        }
+
+        function addTaskNote(curriculumId, weekNumber, taskIndex) {
+            showNoteModal(curriculumId, weekNumber, taskIndex);
+        }
+
+        function showNoteModal(curriculumId, weekNumber, taskIndex = null) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>📝 Add Note</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <form id="note-form">
+                        <div class="form-group">
+                            <label>Note Title</label>
+                            <input type="text" name="title" required placeholder="Enter note title...">
+                        </div>
+                        <div class="form-group">
+                            <label>Note Content</label>
+                            <textarea name="content" required placeholder="Write your note here..." rows="6"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="is_public">
+                                Share this note with the community
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" onclick="closeModal()" class="btn" style="background: #6b7280;">Cancel</button>
+                            <button type="submit" class="btn">Save Note</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Handle form submission
+            document.getElementById('note-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+
+                try {
+                    const response = await fetch('/add_note/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken(),
+                        },
+                        body: JSON.stringify({
+                            curriculum_id: curriculumId,
+                            week_number: weekNumber,
+                            task_index: taskIndex,
+                            title: formData.get('title'),
+                            content: formData.get('content'),
+                            is_public: formData.get('is_public') === 'on'
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        closeModal();
+                        alert('Note saved successfully! You earned ' + result.xp_awarded + ' XP!');
+                        loadWeekNotes(curriculumId, weekNumber);
+                        // Refresh to show updated XP
+                        location.reload();
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
+                } catch (error) {
+                    console.error('Error saving note:', error);
+                    alert('Error saving note. Please try again.');
+                }
+            });
+        }
+
+        function showFeedback(curriculumId) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>⭐ Rate & Review Curriculum</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <form id="feedback-form">
+                        <div class="form-group">
+                            <label>Overall Rating</label>
+                            <div class="star-rating" id="overall-rating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Difficulty Level</label>
+                            <select name="difficulty_rating" required>
+                                <option value="">Select difficulty</option>
+                                <option value="1">Too Easy</option>
+                                <option value="2">Easy</option>
+                                <option value="3">Just Right</option>
+                                <option value="4">Hard</option>
+                                <option value="5">Too Hard</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Your Feedback</label>
+                            <textarea name="feedback_text" placeholder="Share your thoughts about this curriculum..." rows="6"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="would_recommend" checked>
+                                I would recommend this curriculum to others
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="is_anonymous">
+                                Submit feedback anonymously
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" onclick="closeModal()" class="btn" style="background: #6b7280;">Cancel</button>
+                            <button type="submit" class="btn">Submit Feedback</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Handle star rating
+            let selectedRating = 0;
+            document.querySelectorAll('#overall-rating .star').forEach(star => {
+                star.addEventListener('click', () => {
+                    selectedRating = parseInt(star.dataset.rating);
+                    updateStarRating(selectedRating);
+                });
+            });
+
+            // Handle form submission
+            document.getElementById('feedback-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+
+                // Validate rating
+                if (selectedRating === 0) {
+                    alert('Please select a rating!');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/add_feedback/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken(),
+                        },
+                        body: JSON.stringify({
+                            curriculum_id: curriculumId,
+                            rating: selectedRating,
+                            difficulty_rating: formData.get('difficulty_rating'),
+                            feedback_text: formData.get('feedback_text'),
+                            would_recommend: formData.get('would_recommend') === 'on',
+                            is_anonymous: formData.get('is_anonymous') === 'on'
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        closeModal();
+                        alert('Thank you for your feedback! You earned ' + result.xp_awarded + ' XP!');
+                        // Refresh the page to show updated XP
+                        location.reload();
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
+                } catch (error) {
+                    console.error('Error submitting feedback:', error);
+                    alert('Error submitting feedback. Please try again.');
+                }
+            });
+        }
+
+        function updateStarRating(rating) {
+            document.querySelectorAll('#overall-rating .star').forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        async function loadWeekNotes(curriculumId, weekNumber) {
+            try {
+                const response = await fetch(`/get_notes/${curriculumId}/${weekNumber}/`);
+                const notes = await response.json();
+
+                const notesList = document.getElementById(`notes-list-${weekNumber}`);
+                if (notes.length === 0) {
+                    notesList.innerHTML = '<p style="color: #6b7280; font-style: italic;">No notes yet. Click "Add Note" to create your first note!</p>';
+                } else {
+                    notesList.innerHTML = notes.map(note => `
+                        <div class="note-item">
+                            <div class="note-header">
+                                <span class="note-title">${note.title}</span>
+                                <span class="note-date">${new Date(note.created_at).toLocaleDateString()}</span>
+                            </div>
+                            <div class="note-content">${note.content}</div>
+                            <div class="note-actions">
+                                <button class="note-edit" onclick="editNote(${note.id})">Edit</button>
+                                <button class="note-delete" onclick="deleteNote(${note.id})">Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading notes:', error);
+            }
+        }
+
+        function getCSRFToken() {
+            // Use template variable first, then fall back to cookies
+            if (typeof csrfToken !== 'undefined' && csrfToken) {
+                return csrfToken;
+            }
+            
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') return value;
+            }
+            return '';
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if active_curriculum %}
+                // Show active curriculum by default
+            {% else %}
+                // Show new curriculum creation if no active curriculum
+                showNewCurriculum();
+            {% endif %}
+        });
+    </script>
+</body>
+</html>
