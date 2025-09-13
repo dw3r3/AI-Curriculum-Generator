@@ -925,7 +925,7 @@
                     <div class="user-level">
                         <span class="level-badge">Level {{ request.user.userprofile.level|default:1 }}</span>
                         <div class="xp-bar">
-                            <div class="xp-fill" style="width: {{ request.user.userprofile.get_level_progress }}%"></div>
+                            <div class="xp-fill" style="width: { request.user.userprofile.get_level_progress }%"></div>
                         </div>
                         <span class="xp-text">{{ request.user.userprofile.total_xp|default:0 }} XP</span>
                     </div>
